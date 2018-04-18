@@ -1,0 +1,28 @@
+
+server {
+
+    listen       80;
+
+#    access_log  off;
+#    error_log   off;
+
+    server_tokens off;
+
+    # special url for external healthchecks (monitoring systems, AWS Route 53 healthchecks, ALB etc)  
+    location = /health {
+        types {}
+        default_type text/plain;
+        return 200 "OK";
+    }
+    
+    location / {
+       alias /mnt/data/;
+       expires -1;
+       autoindex on;
+       default_type text/plain;
+
+       auth_basic      "Private access";
+       auth_basic_user_file    conf.d/auth.htpasswd;
+    }
+
+}
